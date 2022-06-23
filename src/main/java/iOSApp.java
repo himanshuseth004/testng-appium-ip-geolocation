@@ -17,7 +17,7 @@ public class iOSApp {
     String accessKey = System.getenv("LT_ACCESS_KEY") == null ?
             "accessKey" : System.getenv("LT_ACCESS_KEY"); //Add accessKey here
 
-    public String gridURL = "@beta-hub.lambdatest.com/wd/hub";
+    public String gridURL = "@mobile-hub.lambdatest.com/wd/hub";
 
     AppiumDriver driver;
 
@@ -35,46 +35,71 @@ public class iOSApp {
             capabilities.setCapability("isRealMobile", true);
             capabilities.setCapability("app", "lt://"); //Enter your app url
             capabilities.setCapability("deviceOrientation", "PORTRAIT");
+            capabilities.setCapability("geoLocation","fr");
             capabilities.setCapability("console", true);
             capabilities.setCapability("network", false);
             capabilities.setCapability("visual", true);
             capabilities.setCapability("devicelog", true);
-            //capabilities.setCapability("geoLocation", "HK");
 
+            //ADD GEOLOCATION BASED ON COUNTRY CODE
+            capabilities.setCapability("geoLocation", "fr");
+        
             String hub = "https://" + userName + ":" + accessKey + gridURL;
             driver = new AppiumDriver(new URL(hub), capabilities);
 
             WebDriverWait Wait = new WebDriverWait(driver,30);
 
+            //Changes the color of the text
             Wait.until(ExpectedConditions.presenceOfElementLocated(MobileBy.AccessibilityId("color"))).click();
             Thread.sleep(1000);
 
+            //Changes the text to "Proverbial"
             Wait.until(ExpectedConditions.presenceOfElementLocated(MobileBy.AccessibilityId("Text"))).click();
             Thread.sleep(1000);
 
+            //Toast will be visible
             Wait.until(ExpectedConditions.presenceOfElementLocated(MobileBy.AccessibilityId("toast"))).click();
             Thread.sleep(1000);
 
+            //Notification will be visible
             Wait.until(ExpectedConditions.presenceOfElementLocated(MobileBy.AccessibilityId("notification"))).click();
             Thread.sleep(4000);
 
+            //Opens the geolocation page
             Wait.until(ExpectedConditions.presenceOfElementLocated(MobileBy.AccessibilityId("geoLocation"))).click();
+            Thread.sleep(4000);
+
+            //Takes back
+            driver.navigate().back();
+
+            //Takes to speedtest page
+            Wait.until(ExpectedConditions.presenceOfElementLocated(MobileBy.AccessibilityId("speedTest"))).click();
             Thread.sleep(4000);
 
             driver.navigate().back();
 
-            //MARKING TEST AS PASSED VIA LAMBDA HOOKS            
-            driver.executeScript('lambda-status=passed');
+            //Opens the browser
+            Wait.until(ExpectedConditions.presenceOfElementLocated(MobileBy.AccessibilityId("Browser"))).click();
+            Thread.sleep(1000);
+
+            MobileElement url = (MobileElement) driver.findElementByAccessibilityId("url");
+            url.click();
+            url.sendKeys("https://www.lambdatest.com");
+
+            Wait.until(ExpectedConditions.presenceOfElementLocated(MobileBy.AccessibilityId("find"))).click();
+            Thread.sleep(1000);
 
             driver.quit();
 
         } catch (Exception e) {
             e.printStackTrace();
-            
-            //MARKING TEST AS FAILED VIA LAMBDA HOOKS            
-            driver.executeScript('lambda-status=failed');
-            driver.quit();
+            try{
+                driver.quit();
+            }catch(Exception e1){
+                e.printStackTrace();
             }
         }
 
+
     }
+}

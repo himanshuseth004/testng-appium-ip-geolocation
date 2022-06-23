@@ -1,10 +1,10 @@
-# How to mark test as Passed or Failed in TestNG with Appium on [LambdaTest](https://www.lambdatest.com/?utm_source=github&utm_medium=repo&utm_campaign=appium-testNG-passfail)
+# How to change IP geographic location in TestNG with Appium on [LambdaTest](https://www.lambdatest.com/?utm_source=github&utm_medium=repo&utm_campaign=appium-testNG-geoLocation)
 
-While performing app automation testing with appium on LambdaTest Grid, you may face a scenario where a test that you declared as fail in your local instance may turn out to be completed successfully at LambdaTest. Don't worry though! We understand how imperative it is to flag an app automation test as either "pass" or "fail" depending upon your testing requirement with respect to the validation of expected behaviour. You can refer to sample test repo [here](https://github.com/LambdaTest/LT-appium-java-testng).
+While performing app automation testing with appium on LambdaTest Grid, you may face a scenario where you would like to simulate location of a specific country. You can easily do that by using the lambdatest capability "GeoLocation" and refer the 2-letter country code in the automation script. You can refer to sample test repo [here](https://github.com/LambdaTest/LT-appium-java-testng).
 
 # Steps:
 
-You can specify a test as passed or failed by Lambda hooks. The following is an example on how to set test result as passed or failed. If the code reaches exception, then it will be marked as failed, else as passed.
+The following is an example on how to set geoLocation in the capabilities.
 
 ```java
 import io.appium.java_client.AppiumDriver;
@@ -31,6 +31,8 @@ public class AndroidApp {
                 capabilities.setCapability("platformName", "Android");
                 capabilities.setCapability("isRealMobile", true);
                 capabilities.setCapability("app", "lt://"); //Enter your app url here
+                //ADD GEOLOCATION BASED ON COUNTRY CODE
+                capabilities.setCapability("geoLocation", "fr");
             String hub = "https://" + userName + ":" + accessKey + gridURL;
             driver = new AppiumDriver(new URL(hub), capabilities);
             MobileElement color = (MobileElement) driver.findElementById("com.lambdatest.proverbial:id/color");
@@ -42,16 +44,9 @@ public class AndroidApp {
             MobileElement notification = (MobileElement) driver.findElementById("com.lambdatest.proverbial:id/notification");
             notification.click();
             Thread.sleep(2000);
-
-            //MARKING TEST AS PASSED VIA LAMBDA HOOKS
-            driver.executeScript('lambda-status=passed')
             driver.quit();
-
         } catch (Exception e) {
             e.printStackTrace();
-            
-            //MARKING TEST AS FAILED VIA LAMBDA HOOKS            
-            driver.executeScript('lambda-status=failed');
             driver.quit();
             }
         }
